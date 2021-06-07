@@ -1,23 +1,71 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import Header from "./components/Header";
+import Tasks from "./components/Tasks";
+import React, { useState } from "react";
+import AddTask from "./components/AddTask";
 
 function App() {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      text: "Study React Pre-Class Notes",
+      day: "Feb 5th at 2:30pm",
+      isDone: false,
+    },
+    {
+      id: 2,
+      text: "Feed the Dog",
+      day: "Feb 6th at 1:30pm",
+      isDone: false,
+    },
+    {
+      id: 3,
+      text: "Attend in-Class",
+      day: "Feb 7th at 20:00pm",
+      isDone: false,
+    },
+  ]);
+  const [showAddTask, setShowAddTask] = useState(false);
+
+  //Add Task
+
+  const addTask = (a) => {
+    const id = Math.floor(Math.random() * 1000) + 1;
+    const newTask = { id, ...a };
+    setTasks([...tasks, newTask]);
+  };
+
+  //Delete Task
+  const deleteTask = (deletedTaskId) => {
+    setTasks(tasks.filter((task) => task.id !== deletedTaskId));
+  };
+
+  //ToggleDone
+
+  const toggleDone = (toggledId) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === toggledId ? { ...task, isDone: !task.isDone } : task
+      )
+    );
+  };
+  //ToogleShow
+  const toggleShow = () => setShowAddTask(!showAddTask);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Header
+        title="Task Tracker"
+        showAddTask={showAddTask}
+        toggleShow={toggleShow}
+      />
+      {showAddTask && <AddTask addTask={addTask} />}
+      {tasks.length > 0 ? (
+        <Tasks tasks={tasks} deleteTask={deleteTask} toggleDone={toggleDone} />
+      ) : (
+        "No tasks to show"
+      )}
     </div>
   );
 }
